@@ -120,7 +120,7 @@ Pressure::SampleTimer::SampleTimer(Pressure& pressure_ref, BME280I2C& bme_ref, u
 void Pressure::SampleTimer::callback() { // Timerで定期的に実行される関数
 
   // 高度規正値を不揮発メモリから読み込み
-  double sealevel_Pa = 1013.0;
+  double sealevel_Pa = 1013.25;
   wcpp::Packet qnh = loadPacket('Q'); 
   if (qnh) {
     auto e = qnh.find("Sp");
