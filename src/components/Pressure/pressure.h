@@ -11,7 +11,7 @@ public:
   static const uint8_t telemetry_id = 'E'; // TBD
   static const int max_index = 32;  // p と coe の最大インデックス
 
-  Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 1);
+  Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
 
 protected:
   TwoWire& wire_;
@@ -34,6 +34,7 @@ protected:
   void initialize_pressure_data();
   void initialize_coefficients();
   double height(int pressure);
+  double height_low(double pressure);
 
   class SampleTimer: public process::Timer {
   public:
