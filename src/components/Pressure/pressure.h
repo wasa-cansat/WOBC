@@ -1,6 +1,7 @@
 #include <library/wobc.h>
 #include <Wire.h>
-#include "src/BME280I2C.h"
+#include <Adafruit_BME280.h>
+#include <Adafruit_Sensor.h>
 #include <cmath>
 
 namespace component {
@@ -15,36 +16,36 @@ public:
 
 protected:
   TwoWire& wire_;
-  BME280I2C bme;
+  Adafruit_BME280 bme;
   uint8_t unit_id_;
 
   struct PressureData {
-    double pressure;
-    double altitude;
+    int pressure;
+    int altitude;
   } p[max_index + 1];
 
   struct Coefficients {
-    double a;
-    double b;
-    double c;
+    float a;
+    float b;
+    float c;
   } coe[max_index + 1];
 
   void setup() override;
 
   void initialize_pressure_data();
   void initialize_coefficients();
-  double height(int pressure);
-  double height_low(double pressure);
+  float height(int pressure);
+  float height_low(float pressure);
 
   class SampleTimer: public process::Timer {
   public:
-    SampleTimer(Pressure& pressure_ref, BME280I2C& bme_ref, uint8_t unit_id_ref, unsigned interval_ms);
+    SampleTimer(Pressure& pressure_ref, Adafruit_BME280& bme_ref, uint8_t unit_id_ref, unsigned interval_ms);
 
   protected:
     void callback() override;
 
   private:
-    BME280I2C& bme_;
+    Adafruit_BME280& bme_;
     Pressure& pressure_;
     uint8_t unit_id_;
   } sample_timer_;
