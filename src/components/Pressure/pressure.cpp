@@ -108,10 +108,6 @@ float Pressure::height(int pressure) {
     return 0.0;  // 圧力範囲外の場合は高度0を返す
 }
 
-float Pressure::height_low(float pressure) {
-    return 4430*(1-pow(pressure/1013.25, 0.1903));
-}
-
 Pressure::SampleTimer::SampleTimer(Pressure& pressure_ref, Adafruit_BME280& bme_ref, uint8_t unit_id_ref, unsigned interval_ms)
   : process::Timer("Pressure", interval_ms),
     bme_(bme_ref), unit_id_(unit_id_ref), pressure_(pressure_ref) { 
@@ -129,22 +125,24 @@ void Pressure::SampleTimer::callback() { // Timerで定期的に実行される�
 
   //float temp(NAN);
   //float hum(NAN);
-  float pres(NAN);
+  //float pres(NAN);
+  float presAlt(NAN);
   //temp = bme_.readTemperature();
   //hum = bme_.readHumidity();
-  pres = bme_.readPressure();
+  //pres = bme_.readPressure();
+  presAlt = bme_.readAltitude(sealevel_Pa);  // 0～10km程度の高度であればライブラリの関数で十分
 
   // height関数を使用して圧力から高度を計算
   //double pressureAlt = pressure_.height(static_cast<int>(pres/100));  // オブジェクト pressure_ を使って height を呼び出す
-  double pressureAlt = pressure_.height_low(pres/100);  // オブジェクト pressure_ を使って height を呼び出す
+  
 
-  wcpp::Packet packet = newPacket(64);
+  wcpp::Packet packet = newPacket(16);  // 1個だけなら16バイトのパケットを作成，５個なら64バイトのパケットを作成
   packet.telemetry(telemetry_id, component_id(), unit_id_, 0xFF, 1234);
-  packet.append("Sp").setInt((int)sealevel_Pa);
-  packet.append("PR").setInt((int)pres/100);
+  //packet.append("Sp").setInt((int)sealevel_Pa);
+  //packet.append("PR").setInt((int)pres/100);
   //packet.append("TE").setInt((int)temp);
   //packet.append("HU").setInt((int)hum);
-  packet.append("PA").setInt((int)pressureAlt);  // 計算された高度を追加
+  packet.append("PA").setInt((int)presAlt);  // 計算された高度を追加
   // ... TODO
   sendPacket(packet);
 }
