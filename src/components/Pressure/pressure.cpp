@@ -113,6 +113,15 @@ Pressure::SampleTimer::SampleTimer(Pressure& pressure_ref, Adafruit_BME280& bme_
     bme_(bme_ref), unit_id_(unit_id_ref), pressure_(pressure_ref) { 
 }
 
+void Pressure::SendCommand() {
+  // コマンドを送信する関数
+  wcpp::Packet packet2 = newPacket(64);
+  packet2.command(command_id, component_id);
+  packet2.append("SM").setInt((int)1);  // SM:Separate Mechanism 1:Separate
+  // ... TODO
+  sendPacket(packet2);
+}
+
 void Pressure::SampleTimer::callback() { // Timerで定期的に実行される関数
 
   // 高度規正値を不揮発メモリから読み込み
@@ -123,28 +132,32 @@ void Pressure::SampleTimer::callback() { // Timerで定期的に実行される�
     if (e) sealevel_Pa = (*e).getFloat32();
   }
 
-  //float temp(NAN);
-  //float hum(NAN);
-  //float pres(NAN);
+  // 圧力から高度を計算
   float presAlt(NAN);
-  //temp = bme_.readTemperature();
-  //hum = bme_.readHumidity();
-  //pres = bme_.readPressure();
   presAlt = bme_.readAltitude(sealevel_Pa);  // 0～10km程度の高度であればライブラリの関数で十分
-
-  // height関数を使用して圧力から高度を計算
-  //double pressureAlt = pressure_.height(static_cast<int>(pres/100));  // オブジェクト pressure_ を使って height を呼び出す
-  
-
-  wcpp::Packet packet = newPacket(16);  // 1個だけなら16バイトのパケットを作成，５個なら64バイトのパケットを作成
-  packet.telemetry(telemetry_id, component_id(), unit_id_, 0xFF, 1234);
-  //packet.append("Sp").setInt((int)sealevel_Pa);
-  //packet.append("PR").setInt((int)pres/100);
-  //packet.append("TE").setInt((int)temp);
-  //packet.append("HU").setInt((int)hum);
-  packet.append("PA").setInt((int)presAlt);  // 計算された高度を追加
+/*
+  // テレメトリを送信
+  wcpp::Packet packet1 = newPacket(64);  // 1個だけなら16バイトのパケットを作成，５個なら64バイトのパケットを作成
+  packet1.telemetry(telemetry_id, component_id(), unit_id_, 0xFF, 1234);
+  //packet1.append("Sp").setInt((int)sealevel_Pa);
+  //packet1.append("PR").setInt((int)pres/100);
+  //packet1.append("TE").setInt((int)temp);
+  //packet1.append("HU").setInt((int)hum);
+  packet1.append("PA").setInt((int)presAlt);  // 計算された高度を追加
   // ... TODO
-  sendPacket(packet);
+  sendPacket(packet1);
+*/
+  
+  // 分離判定
+  float minAlt(NAN);
+  float maxAlt(NAN);
+  float diffAlt(NAN);
+  minAlt = min(minAlt, presAlt);
+  maxAlt = max(maxAlt, presAlt);
+  diffAlt = maxAlt - minAlt;
+  if (maxAlt - minAlt > 30 && maxAlt -presAlt > diffAlt-3) {
+    pressure_.SendCommand();
+  }
 }
 
 }

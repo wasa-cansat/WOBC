@@ -10,6 +10,7 @@ class Pressure: public process::Component {
 public:
   static const uint8_t component_id = 0x25; // TBD
   static const uint8_t telemetry_id = 'E'; // TBD
+  static const uint8_t command_id = 'F'; // TBD
   static const int max_index = 32;  // p と coe の最大インデックス
 
   Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
@@ -35,7 +36,8 @@ protected:
   void initialize_pressure_data();
   void initialize_coefficients();
   float height(int pressure);
-  float height_low(float pressure);
+  
+  void SendCommand();
 
   class SampleTimer: public process::Timer {
   public:
