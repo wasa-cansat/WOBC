@@ -60,13 +60,10 @@ void Pressure::SampleTimer::callback() { // Timerで定期的に実行される�
 */
   
   // 分離判定
-  float minAlt(NAN);
-  float maxAlt(NAN);
-  float diffAlt(NAN);
   minAlt = min(minAlt, presAlt);
   maxAlt = max(maxAlt, presAlt);
-  diffAlt = maxAlt - minAlt;
-  if (maxAlt - minAlt > 30 && maxAlt -presAlt > diffAlt-3) {
+  float diffAlt = maxAlt - minAlt;
+  if (diffAlt > 30 && maxAlt -presAlt > diffAlt-3) {
     pressure_.SendCommand();
   }
 }

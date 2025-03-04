@@ -47,6 +47,8 @@ protected:
     Adafruit_BME280& bme_;
     Pressure& pressure_;
     uint8_t unit_id_;
+    float minAlt=INFINITY;
+    float maxAlt=-INFINITY;
   } sample_timer_;
 };
 
