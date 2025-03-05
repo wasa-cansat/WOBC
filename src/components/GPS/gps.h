@@ -5,8 +5,10 @@ namespace component{
 
 class GPS : public process::Component{
 public:
-    static const uint8_t component_id = 21;
-    static const uint8_t telemetry_id = 'M';
+  static const uint8_t component_id = 21;
+  static const uint8_t telemetry_id = 'M';
+  float destination_lat;
+  float destination_long;
 
 public:
   GPS(driver::GenericSerialClass& serial, uint32_t baud);
