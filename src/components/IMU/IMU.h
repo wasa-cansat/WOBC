@@ -11,6 +11,9 @@ public:
     static const uint8_t telemetry_id = 'I';
     static const uint8_t command_id = 'C';
 
+    int status;  // 状態
+    uint8_t ctrl_component_id;  // 送り先のコンポーネントID
+
     float b1;  // 楕円パラメータ
     float b2;
     float b3;
@@ -45,6 +48,8 @@ protected:
     float getroll(float ay, float az);
     float getpitch(float ax, float ay, float az);
     float getyaw(float roll, float pitch, float mx, float my, float mz);
+
+    void SendCommand(float yaw);
 
 
     class SampleTimer : public process::Timer{

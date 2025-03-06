@@ -47,7 +47,14 @@ IMU::SampleTimer::SampleTimer(IMU& imu_ref, uint8_t unit_id_ref, unsigned interv
     compass_(imu_.compass_),
     unit_id_(unit_id_ref) {
 
-    }   
+}   
+
+void IMU::SendCommand(float yaw) {
+    wcpp::Packet packet2 = newPacket(64);
+    packet2.command(command_id, ctrl_component_id);
+    packet2.append("YA").setFloat16(yaw);
+    sendPacket(packet2);
+}
 
 void IMU::SampleTimer::callback() {
     accel_.readSensor();
@@ -78,6 +85,9 @@ void IMU::SampleTimer::callback() {
     // ... TODO
     sendPacket(packet1);
 
+    if(imu_.status == 1){  // 缶サットの近距離制御用など
+        imu_.SendCommand(imu_.getyaw(imu_.getroll(accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelX_mss(), accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.qc1, imu_.qc2, imu_.qc3));
+    }
 }
 
 }
