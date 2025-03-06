@@ -1,55 +1,35 @@
-#include <library/wobc.h>
-#include <Wire.h>
+#pragma once
+
 #include <Adafruit_BME280.h>
-#include <Adafruit_Sensor.h>
-#include <cmath>
+#include <library/process/component.h>
+#include <library/wobc.h>
 
 namespace component {
 
-class Pressure: public process::Component {
+class Pressure : public process::Component {
 public:
-  static const uint8_t component_id = 0x25; // TBD
-  static const uint8_t tocomponent_id = 0x26; // TBD
-  static const uint8_t telemetry_id = 'E'; // TBD
-  static const uint8_t command_id = 'F'; // TBD
-  static const int max_index = 32;  // p と coe の最大インデックス
-
-  Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
-
-protected:
-  TwoWire& wire_;
-  Adafruit_BME280 bme;
-  uint8_t unit_id_;
-
-  struct PressureData {
-    int pressure;
-    int altitude;
-  } p[max_index + 1];
-
-  struct Coefficients {
-    float a;
-    float b;
-    float c;
-  } coe[max_index + 1];
-
-  void setup() override;
+  static constexpr uint8_t component_id = 0x10;
+  static constexpr uint8_t telemetry_id = 0x01;
   
-  void SendCommand();  // 送り先のコンポーネントID
-
-  class SampleTimer: public process::Timer {
-  public:
-    SampleTimer(Pressure& pressure_ref, Adafruit_BME280& bme_ref, uint8_t unit_id_ref, unsigned interval_ms);
-
-  protected:
-    void callback() override;
-
-  private:
-    Adafruit_BME280& bme_;
-    Pressure& pressure_;
-    uint8_t unit_id_;
-    float minAlt=INFINITY;
-    float maxAlt=-INFINITY;
-  } sample_timer_;
+  Pressure();
+  
+  void begin();
+  void loop() override;
+  
+private:
+  Adafruit_BME280 bme_;
+  unsigned long lastReadingTime_ = 0;
+  const unsigned long readingInterval_ = 2000; // Read every 2 seconds
+  
+  // Environmental data
+  float temperature_ = 0.0f;
+  float pressure_ = 0.0f;
+  float altitude_ = 0.0f;
+  float humidity_ = 0.0f;
+  
+  bool initializeSensor();
+  void readSensorData();
+  void sendTelemetry();
 };
 
-}
+} // namespace component

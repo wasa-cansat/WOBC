@@ -68,4 +68,79 @@ void Pressure::SampleTimer::callback() { // Timerで定期的に実行される�
   }
 }
 
+Pressure::Pressure() 
+  : process::Component("Pressure", component_id) {
 }
+
+void Pressure::begin() {
+  process::Component::begin();
+  
+  // Initialize sensor
+  if (initializeSensor()) {
+    LOG("BME280 sensor initialized successfully");
+  } else {
+    LOG("Failed to initialize BME280 sensor");
+  }
+}
+
+bool Pressure::initializeSensor() {
+  // For CD module that only receives data, we don't actually need the sensor
+  // This is just a stub implementation to avoid the compilation error
+  // If you want to add actual sensor functionality later, uncomment the code below
+  /*
+  if (!bme_.begin(0x76)) {  // Try the default I2C address
+    if (!bme_.begin(0x77)) { // Try alternate address
+      return false;
+    }
+  }
+  */
+  return true;
+}
+
+void Pressure::loop() {
+  unsigned long currentTime = millis();
+  
+  // In a receiver-only module, we don't need to read actual sensor data
+  // This is placeholder code for if you later want to add sensor reading functionality
+  
+  /*
+  // Check if it's time to read sensor data
+  if (currentTime - lastReadingTime_ >= readingInterval_) {
+    lastReadingTime_ = currentTime;
+    
+    readSensorData();
+    sendTelemetry();
+  }
+  */
+}
+
+void Pressure::readSensorData() {
+  // In a receiver-only module, this function wouldn't be used
+  // Placeholder for future implementation if needed
+  /*
+  temperature_ = bme_.readTemperature();
+  pressure_ = bme_.readPressure() / 100.0F; // Convert Pa to hPa
+  altitude_ = bme_.readAltitude(1013.25); // Standard pressure at sea level
+  humidity_ = bme_.readHumidity();
+  */
+}
+
+void Pressure::sendTelemetry() {
+  // In a receiver-only module, this function wouldn't be used
+  // Placeholder for future implementation if needed
+  /*
+  wcpp::Packet packet;
+  packet.module_id(module_id());
+  packet.component_id(component_id);
+  packet.packet_id(telemetry_id);
+  
+  packet.set("Tmp", temperature_);    // Temperature in °C
+  packet.set("Prs", pressure_);       // Pressure in hPa
+  packet.set("Alt", altitude_);       // Altitude in meters
+  packet.set("Hum", humidity_);       // Humidity in %
+  
+  telemetry(packet);
+  */
+}
+
+} // namespace component
