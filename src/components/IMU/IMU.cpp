@@ -70,23 +70,23 @@ void IMU::SampleTimer::callback() {
     // テレメトリを送信
     wcpp::Packet packet1 = newPacket(64);
     packet1.telemetry(telemetry_id, component_id());
-    packet1.append("AX").setFloat16((float)accel_.getAccelX_mss());
-    packet1.append("AY").setFloat16((float)accel_.getAccelY_mss());
+    packet1.append("AX").setFloat16((float)accel_.getAccelY_mss());  // そのときの基板系とセンサの系によって変わる
+    packet1.append("AY").setFloat16((float)-accel_.getAccelX_mss());
     packet1.append("AZ").setFloat16((float)accel_.getAccelZ_mss());
-    packet1.append("GX").setFloat16((float)gyro_.getGyroX_rads());
-    packet1.append("GY").setFloat16((float)gyro_.getGyroY_rads());
+    packet1.append("GX").setFloat16((float)gyro_.getGyroY_rads());
+    packet1.append("GY").setFloat16((float)-gyro_.getGyroX_rads());
     packet1.append("GZ").setFloat16((float)gyro_.getGyroZ_rads());
-    packet1.append("MX").setFloat16((float)imu_.qc1);
-    packet1.append("MY").setFloat16((float)imu_.qc2);
+    packet1.append("MX").setFloat16((float)imu_.qc2);
+    packet1.append("MY").setFloat16((float)-imu_.qc1);
     packet1.append("MZ").setFloat16((float)imu_.qc3);
-    packet1.append("RO").setFloat16(imu_.getroll(accel_.getAccelY_mss(), accel_.getAccelZ_mss()));
-    packet1.append("PI").setFloat16(imu_.getpitch(accel_.getAccelX_mss(), accel_.getAccelY_mss(), accel_.getAccelZ_mss()));
-    packet1.append("YA").setFloat16(imu_.getyaw(imu_.getroll(accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelX_mss(), accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.qc1, imu_.qc2, imu_.qc3));
+    packet1.append("RO").setFloat16(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()));
+    packet1.append("PI").setFloat16(imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()));
+    packet1.append("YA").setFloat16(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.qc2, -imu_.qc1, imu_.qc3));
     // ... TODO
     sendPacket(packet1);
 
     if(imu_.status == 1){  // 缶サットの近距離制御用など
-        imu_.SendCommand(imu_.getyaw(imu_.getroll(accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelX_mss(), accel_.getAccelY_mss(), accel_.getAccelZ_mss()), imu_.qc1, imu_.qc2, imu_.qc3));
+        imu_.SendCommand(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.qc2, -imu_.qc1, imu_.qc3));
     }
 }
 
