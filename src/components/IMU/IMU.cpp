@@ -76,17 +76,17 @@ void IMU::SampleTimer::callback() {
     packet1.append("GX").setFloat16((float)gyro_.getGyroY_rads());
     packet1.append("GY").setFloat16((float)-gyro_.getGyroX_rads());
     packet1.append("GZ").setFloat16((float)gyro_.getGyroZ_rads());
-    packet1.append("MX").setFloat16((float)imu_.qc2);
-    packet1.append("MY").setFloat16((float)-imu_.qc1);
+    packet1.append("MX").setFloat16((float)-imu_.qc2);
+    packet1.append("MY").setFloat16((float)imu_.qc1);
     packet1.append("MZ").setFloat16((float)imu_.qc3);
     packet1.append("RO").setFloat16(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()));
     packet1.append("PI").setFloat16(imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()));
-    packet1.append("YA").setFloat16(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.qc2, -imu_.qc1, imu_.qc3));
+    packet1.append("YA").setFloat16(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), -imu_.qc2, imu_.qc1, imu_.qc3));
     // ... TODO
     sendPacket(packet1);
 
     if(imu_.status == 1){  // 缶サットの近距離制御用など
-        imu_.SendCommand(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.qc2, -imu_.qc1, imu_.qc3));
+        imu_.SendCommand(imu_.getyaw(imu_.getroll(-accel_.getAccelX_mss(), accel_.getAccelZ_mss()), imu_.getpitch(accel_.getAccelY_mss(), -accel_.getAccelX_mss(), accel_.getAccelZ_mss()), -imu_.qc2, imu_.qc1, imu_.qc3));
     }
 }
 
