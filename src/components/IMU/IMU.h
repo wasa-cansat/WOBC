@@ -11,25 +11,25 @@ public:
     static const uint8_t telemetry_id = 'I';
     static const uint8_t command_id = 'C';
 
-    float b1;
+    float b1;  // 楕円パラメータ
     float b2;
     float b3;
-    float t1;
-    float t2;
-    float t3;
-    float p11;
+    float t1;  // 固有値
+    float t2;  
+    float t3;  
+    float p11;  // 固有値ベクトル1
     float p12;
     float p13;
-    float p21;
+    float p21;  // 固有値ベクトル2
     float p22;
     float p23;
-    float p31;
+    float p31;  // 固有値ベクトル3
     float p32;
     float p33;
-    float q1;
+    float q1;  // 生データ
     float q2;
     float q3;
-    float qc1;
+    float qc1;  // キャリブレーション後
     float qc2;
     float qc3;
 
