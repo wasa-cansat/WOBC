@@ -5,6 +5,7 @@ namespace component {
 Pressure::Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz)
   : process::Component("Pressure", component_id),
     wire_(wire),
+    bme(),
     unit_id_(unit_id),
     sample_timer_(*this, bme, unit_id, 1000 / sample_freq_hz) {
 }

@@ -8,14 +8,43 @@ namespace component{
 class IMU : public process::Component{
 public:
     static const uint8_t component_id = 20;
-    static const uint8_t telemetry_id = 'M';
+    static const uint8_t telemetry_id = 'I';
+    static const uint8_t command_id = 'C';
 
-    IMU(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
+    float b1;
+    float b2;
+    float b3;
+    float t1;
+    float t2;
+    float t3;
+    float p11;
+    float p12;
+    float p13;
+    float p21;
+    float p22;
+    float p23;
+    float p31;
+    float p32;
+    float p33;
+    float q1;
+    float q2;
+    float q3;
+    float qc1;
+    float qc2;
+    float qc3;
+
+    IMU(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 100);
 
 protected:
     TwoWire& wire_;
+    Bmi088Accel accel_;
+    Bmi088Gyro gyro_;
+    QMC5883LCompass compass_;
 
     void setup() override;
+    float getroll(float ay, float az);
+    float getpitch(float ax, float ay, float az);
+    float getyaw(float roll, float pitch, float mx, float my, float mz);
 
 
     class SampleTimer : public process::Timer{
