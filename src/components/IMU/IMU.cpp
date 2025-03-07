@@ -23,6 +23,8 @@ void IMU::setup() {
         delay(1000);
     }
     compass_.init();
+
+    status = 0;
 }
 
 float IMU::getroll(float ay, float az) {
