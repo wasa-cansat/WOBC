@@ -12,7 +12,7 @@ public:
   static const uint8_t tocomponent_id = 0x26; // TBD
   static const uint8_t telemetry_id = 'E'; // TBD
   static const uint8_t command_id = 'F'; // TBD
-  static const int max_index = 32;  // p と coe の最大インデックス
+  static const uint8_t timeout_t; // TBD
 
   Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
 
@@ -20,17 +20,6 @@ protected:
   TwoWire& wire_;
   Adafruit_BME280 bme;
   uint8_t unit_id_;
-
-  struct PressureData {
-    int pressure;
-    int altitude;
-  } p[max_index + 1];
-
-  struct Coefficients {
-    float a;
-    float b;
-    float c;
-  } coe[max_index + 1];
 
   void setup() override;
   

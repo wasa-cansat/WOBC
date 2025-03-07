@@ -64,7 +64,7 @@ void Pressure::SampleTimer::callback() { // Timerで定期的に実行される�
   minAlt = min(minAlt, presAlt);
   maxAlt = max(maxAlt, presAlt);
   float diffAlt = maxAlt - minAlt;
-  if (diffAlt > 30 && maxAlt -presAlt > diffAlt-3) {
+  if ((diffAlt > 30 && maxAlt -presAlt > diffAlt-3) || millis() > timeout_t) {
     pressure_.SendCommand();
   }
 }
