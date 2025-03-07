@@ -1,3 +1,4 @@
+#pragma once
 #include <library/wobc.h>
 #include <Wire.h>
 #include <Adafruit_BME280.h>
@@ -12,7 +13,7 @@ public:
   static const uint8_t tocomponent_id = 0x26; // TBD
   static const uint8_t telemetry_id = 'E'; // TBD
   static const uint8_t command_id = 'F'; // TBD
-  static const uint8_t timeout_t; // TBD
+  static const uint8_t timeout_t = 600000; // TBD
 
   Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz = 10);
 

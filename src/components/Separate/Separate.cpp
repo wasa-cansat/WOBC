@@ -2,14 +2,19 @@
 
 namespace component {
 
-Separate::Separate(): process::Component("Separate", component_id) {};
+    const uint8_t Separate::component_id = 0x28; // TBD
+    const unsigned Separate::linstener_queue_size = 4;
+
+Separate::Separate()
+    : process::Component("Separate", component_id) {
+};
 
 
 void Separate::setup() {
     //my_listener_.telemetry();
     my_listener_.command();
     // コンポーネントIDでフィルタリング
-    my_listener_.component(Pressure::component_id);
+    my_listener_.component(0x25);
     // リスナーを開始(キューサイズ4で)
     listen(my_listener_, linstener_queue_size);
 
