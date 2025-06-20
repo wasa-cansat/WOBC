@@ -1,5 +1,7 @@
 #include "pressure.h"
 
+// コメントアウト
+
 namespace component {
 
 Pressure::Pressure(TwoWire& wire, uint8_t unit_id, unsigned sample_freq_hz)
